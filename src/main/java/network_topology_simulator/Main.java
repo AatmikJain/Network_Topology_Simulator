@@ -1,9 +1,7 @@
 package network_topology_simulator;
 
 
-import java.awt.Color;
 import java.awt.MouseInfo;
-import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -37,9 +35,8 @@ public class Main extends javax.swing.JFrame {
     int x,y;
     
     public Main() {
-        initComponents();  
+        initComponents();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -92,6 +89,11 @@ public class Main extends javax.swing.JFrame {
         jButton3.setText("Evaluate");
 
         jButton4.setText("Reset");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -159,6 +161,13 @@ public class Main extends javax.swing.JFrame {
         x = MouseInfo.getPointerInfo().getLocation().x;
         y = MouseInfo.getPointerInfo().getLocation().y;
     }//GEN-LAST:event_jPanel1MouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        jPanel1.removeAll();
+        revalidate();
+        repaint();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
