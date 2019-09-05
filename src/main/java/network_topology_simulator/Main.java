@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -146,13 +147,19 @@ public class Main extends javax.swing.JFrame {
             // TODO validate corner addition
             //TODO rectify overlapping
             Graphics g = this.jPanel1.getGraphics();
-            p.x = evt.getX();
-            p.y = evt.getY();
+            p.x = Math.max(0, evt.getX()-50);
+            p.y = Math.max(0, evt.getY()-50);
             try 
             {
-                BufferedImage img = ImageIO.read(getClass().getResource("/images/node_icon.png"));
-                g.drawImage(img, p.x, p.y, rootPane);
-                System.out.println(p.x+" "+ p.y);
+                if(isPointOnANode(p))
+                    JOptionPane.showMessageDialog(this, "Overlapping other node");
+                else
+                {
+                    BufferedImage img = ImageIO.read(getClass().getResource("/images/node_icon.png"));
+                    g.drawImage(img, p.x, p.y, rootPane);
+                    nodes.add(p);
+                    System.out.println(p.x+" "+ p.y);
+                }
             }
             catch (IOException ex)
             {
@@ -222,6 +229,16 @@ public class Main extends javax.swing.JFrame {
                 new Main().setVisible(true);
             }
         });
+    }
+    private boolean isPointOnANode(Point p)
+    {
+        //sort arraylist and binary search point
+        for(int i=0; i<nodes.size(); i++)
+        {
+            if(Math.abs(nodes.get(i).x - p.x) <= 50 && Math.abs(nodes.get(i).y - p.y) <= 50)
+                return true;
+        }
+        return false;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
