@@ -1,12 +1,14 @@
 package network_topology_simulator;
 
 
-import java.awt.MouseInfo;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,21 +20,14 @@ import javax.swing.border.LineBorder;
  *
  * @author ATUL JAIN
  */
-class Point
-{
-    int x, y;
-    Point(int x, int y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-}
 public class Main extends javax.swing.JFrame {
 
     /**
      * Creates new form Main
      */
-    int x,y;
+    boolean addingNode = false;
+    Point p = new Point(-1, -1);  
+    ArrayList<Point> nodes = new ArrayList<>();
     
     public Main() {
         initComponents();
@@ -135,20 +130,7 @@ public class Main extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        JLabel label = new JLabel("Label");
-        label.setIcon(new ImageIcon(getClass().getResource("/images/node_icon.png")));
-        
-        //TODO remove border
-//        label.setBorder(new LineBorder(Color.black, 1, true));
-        
-        // TODO validate corner addition
-        //TODO rectify overlapping
-        label.setBounds(Math.max(0, x-50), Math.max(0, y-50), 100, 100);
-
-        jPanel1.add(label);
-        jPanel1.revalidate();
-        jPanel1.repaint();
-        System.out.println(x+", "+y);
+        addingNode = true;        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -158,8 +140,46 @@ public class Main extends javax.swing.JFrame {
 
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
         // TODO add your handling code here:
-        x = MouseInfo.getPointerInfo().getLocation().x;
-        y = MouseInfo.getPointerInfo().getLocation().y;
+
+        if(addingNode)
+        {
+            // TODO validate corner addition
+            //TODO rectify overlapping
+            Graphics g = this.jPanel1.getGraphics();
+            p.x = evt.getX();
+            p.y = evt.getY();
+            try 
+            {
+                BufferedImage img = ImageIO.read(getClass().getResource("/images/node_icon.png"));
+                g.drawImage(img, p.x, p.y, rootPane);
+                System.out.println(p.x+" "+ p.y);
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            p.x=-1;
+            p.y=-1;
+            addingNode = false;
+        }
+
+        else //adding Connection
+        {
+            if (p.x == -1 && p.y == -1)
+            {
+                p.x = evt.getX();
+                p.y = evt.getY();
+            }
+            else
+            {
+                Graphics g = this.jPanel1.getGraphics();
+                g.drawLine(p.x, p.y, evt.getX(), evt.getY());
+                
+                // reset the start point
+                p.x = -1;
+                p.y = -1;
+            }
+        }    
     }//GEN-LAST:event_jPanel1MouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
