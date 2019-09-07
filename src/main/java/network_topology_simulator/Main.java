@@ -128,8 +128,7 @@ public class Main extends javax.swing.JFrame {
 
         if(addingNode)
         {
-            // TODO validate corner addition
-            //TODO rectify overlapping
+            // TODO validate right corner addition
             Graphics g = this.jPanel1.getGraphics();
             p.x = Math.max(0, evt.getX()-50);
             p.y = Math.max(0, evt.getY()-50);
@@ -141,8 +140,7 @@ public class Main extends javax.swing.JFrame {
                 {
                     BufferedImage img = ImageIO.read(getClass().getResource("/images/node_icon.png"));
                     g.drawImage(img, p.x, p.y, rootPane);
-                    nodes.add(p);
-                    System.out.println(p.x+" "+ p.y);
+                    nodes.add(new Point(p.x, p.y));
                 }
             }
             catch (IOException ex)
