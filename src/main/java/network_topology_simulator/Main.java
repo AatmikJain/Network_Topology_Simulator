@@ -24,12 +24,12 @@ import javax.swing.JOptionPane;
 class Node
 {
     int x, y;
-    Node next;
+    ArrayList<Node> connections;
 
     public Node(int x, int y) {
         this.x = x;
         this.y = y;
-        this.next = null;
+        connections = new ArrayList<>();
     }
     
 }
@@ -38,10 +38,9 @@ public class Main extends javax.swing.JFrame {
     /**
      * Creates new form Main
      */
-    boolean addingNode = false;
-    Node node = new Node(-1, -1);  
+    boolean addingNode = true;
+    Point p = new Point(-1, -1);
     ArrayList<Node> nodeArl = new ArrayList<>();
-//    ArrayList<> connections = new ArrayList<>();
     
     public Main() {
         initComponents();
@@ -59,8 +58,11 @@ public class Main extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setName("Network Topology Simulator"); // NOI18N
+        setResizable(false);
 
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -96,6 +98,13 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setText("Add Connection");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -104,12 +113,13 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton3)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)))
+                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -120,7 +130,9 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(86, 86, 86)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton3)
                             .addComponent(jButton4))
@@ -143,17 +155,19 @@ public class Main extends javax.swing.JFrame {
         {
             // TODO validate right corner addition
             Graphics g = this.jPanel1.getGraphics();
-            node.x = Math.max(0, evt.getX()-50);
-            node.y = Math.max(0, evt.getY()-50);
+            p.x = Math.max(0, evt.getX()-50);
+            p.y = Math.max(0, evt.getY()-50);
             try 
             {
-                if(isPointOnANode(node))
+                if(isPointOnANode(p))
                     JOptionPane.showMessageDialog(this, "Overlapping other node");
                 else
                 {
                     BufferedImage img = ImageIO.read(getClass().getResource("/images/node_icon.png"));
-                    g.drawImage(img, node.x, node.y, rootPane);
-                    nodeArl.add(new Node(node.x, node.y));
+                    
+                    g.drawImage(img, p.x, p.y, rootPane);
+                    nodeArl.add(new Node(p.x, p.y));
+                    System.out.println(p.x+" "+p.y);
                 }
             }
             catch (IOException ex)
@@ -162,28 +176,45 @@ public class Main extends javax.swing.JFrame {
             }
             finally
             {
-                node.x=-1;
-                node.y=-1;
-                addingNode = false;
+                p.x = -1;
+                p.y = -1;
             }
         }
 
         else //adding Connection
         {
-            if (node.x == -1 && node.y == -1)
+            //TODO handle exceptions
+            if (p.x == -1 && p.y == -1)
             {
-                node.x = evt.getX();
-                node.y = evt.getY();
+                p.x = evt.getX();
+                p.y = evt.getY();
             }
             else
             {
                 Graphics g = this.jPanel1.getGraphics();
-                Node node2 = new Node(evt.getX(), evt.getY());
-                g.drawLine(node.x, node.y, node2.x, node2.y);
+                Point p2 = new Point(evt.getX(), evt.getY());
+                if(isPointOnANode(p) && isPointOnANode(p2))
+                {
+                    Node src=null, dest=null;
+                    
+                    //TODO separate or optimize search for src and dest
+                    for(int i=0; i<nodeArl.size(); i++)
+                    {
+                        if(Math.abs(nodeArl.get(i).x - p.x) <= 95 && Math.abs(nodeArl.get(i).y - p.y) <= 95)
+                            src = nodeArl.get(i);
+                        if(Math.abs(nodeArl.get(i).x - p2.x) <= 95 && Math.abs(nodeArl.get(i).y - p2.y) <= 95)
+                            dest = nodeArl.get(i);
+                        
+                        //TODO add check for same node as src and dest
+                    }
+                    src.connections.add(dest);
+                    dest.connections.add(src);
+                }
+                g.drawLine(p.x, p.y, p2.x, p2.y);
                 
                 // reset the start point
-                node.x = -1;
-                node.y = -1;
+                p.x = -1;
+                p.y = -1;
             }
         }    
     }//GEN-LAST:event_jPanel1MouseClicked
@@ -194,10 +225,14 @@ public class Main extends javax.swing.JFrame {
         revalidate();
         repaint();
         nodeArl.clear();
-        addingNode = false;
-        node.x = -1;
-        node.y = -1;
+        p.x = -1;
+        p.y = -1;
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        addingNode = false;
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -233,12 +268,12 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
-    private boolean isPointOnANode(Node node)
+    private boolean isPointOnANode(Point p)
     {
-        //sort arraylist and binary search point
+        //TODO sort arraylist and binary search point
         for(int i=0; i<nodeArl.size(); i++)
         {
-            if(Math.abs(nodeArl.get(i).x - node.x) <= 50 && Math.abs(nodeArl.get(i).y - node.y) <= 50)
+            if(Math.abs(nodeArl.get(i).x - p.x) <= 95 && Math.abs(nodeArl.get(i).y - p.y) <= 95)
                 return true;
         }
         return false;
@@ -246,6 +281,7 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JPanel jPanel1;
