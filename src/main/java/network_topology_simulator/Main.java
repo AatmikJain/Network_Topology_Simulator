@@ -21,14 +21,27 @@ import javax.swing.JOptionPane;
  *
  * @author ATUL JAIN
  */
+class Node
+{
+    int x, y;
+    Node next;
+
+    public Node(int x, int y) {
+        this.x = x;
+        this.y = y;
+        this.next = null;
+    }
+    
+}
 public class Main extends javax.swing.JFrame {
 
     /**
      * Creates new form Main
      */
     boolean addingNode = false;
-    Point p = new Point(-1, -1);  
-    ArrayList<Point> nodes = new ArrayList<>();
+    Node node = new Node(-1, -1);  
+    ArrayList<Node> nodeArl = new ArrayList<>();
+//    ArrayList<> connections = new ArrayList<>();
     
     public Main() {
         initComponents();
@@ -130,17 +143,17 @@ public class Main extends javax.swing.JFrame {
         {
             // TODO validate right corner addition
             Graphics g = this.jPanel1.getGraphics();
-            p.x = Math.max(0, evt.getX()-50);
-            p.y = Math.max(0, evt.getY()-50);
+            node.x = Math.max(0, evt.getX()-50);
+            node.y = Math.max(0, evt.getY()-50);
             try 
             {
-                if(isPointOnANode(p))
+                if(isPointOnANode(node))
                     JOptionPane.showMessageDialog(this, "Overlapping other node");
                 else
                 {
                     BufferedImage img = ImageIO.read(getClass().getResource("/images/node_icon.png"));
-                    g.drawImage(img, p.x, p.y, rootPane);
-                    nodes.add(new Point(p.x, p.y));
+                    g.drawImage(img, node.x, node.y, rootPane);
+                    nodeArl.add(new Node(node.x, node.y));
                 }
             }
             catch (IOException ex)
@@ -149,27 +162,28 @@ public class Main extends javax.swing.JFrame {
             }
             finally
             {
-                p.x=-1;
-                p.y=-1;
+                node.x=-1;
+                node.y=-1;
                 addingNode = false;
             }
         }
 
         else //adding Connection
         {
-            if (p.x == -1 && p.y == -1)
+            if (node.x == -1 && node.y == -1)
             {
-                p.x = evt.getX();
-                p.y = evt.getY();
+                node.x = evt.getX();
+                node.y = evt.getY();
             }
             else
             {
                 Graphics g = this.jPanel1.getGraphics();
-                g.drawLine(p.x, p.y, evt.getX(), evt.getY());
+                Node node2 = new Node(evt.getX(), evt.getY());
+                g.drawLine(node.x, node.y, node2.x, node2.y);
                 
                 // reset the start point
-                p.x = -1;
-                p.y = -1;
+                node.x = -1;
+                node.y = -1;
             }
         }    
     }//GEN-LAST:event_jPanel1MouseClicked
@@ -179,10 +193,10 @@ public class Main extends javax.swing.JFrame {
         jPanel1.removeAll();
         revalidate();
         repaint();
-        nodes.clear();
+        nodeArl.clear();
         addingNode = false;
-        p.x = -1;
-        p.y = -1;
+        node.x = -1;
+        node.y = -1;
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
@@ -219,12 +233,12 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
-    private boolean isPointOnANode(Point p)
+    private boolean isPointOnANode(Node node)
     {
         //sort arraylist and binary search point
-        for(int i=0; i<nodes.size(); i++)
+        for(int i=0; i<nodeArl.size(); i++)
         {
-            if(Math.abs(nodes.get(i).x - p.x) <= 50 && Math.abs(nodes.get(i).y - p.y) <= 50)
+            if(Math.abs(nodeArl.get(i).x - node.x) <= 50 && Math.abs(nodeArl.get(i).y - node.y) <= 50)
                 return true;
         }
         return false;
