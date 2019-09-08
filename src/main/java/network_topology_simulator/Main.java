@@ -198,6 +198,7 @@ public class Main extends javax.swing.JFrame {
             {
                 Graphics g = this.jPanel1.getGraphics();
                 Point p2 = new Point(evt.getX(), evt.getY());
+                //TODO write code for points not on any node
                 if(isPointOnANode(p) && isPointOnANode(p2))
                 {
                     Node src=null, dest=null;
@@ -205,9 +206,9 @@ public class Main extends javax.swing.JFrame {
                     //TODO separate or optimize search for src and dest
                     for(int i=0; i<nodeArl.size(); i++)
                     {
-                        if(Math.abs(nodeArl.get(i).x - p.x) <= 95 && Math.abs(nodeArl.get(i).y - p.y) <= 95)
+                        if(Math.abs(nodeArl.get(i).x - p.x) <= 100 && Math.abs(nodeArl.get(i).y - p.y) <= 100)
                             src = nodeArl.get(i);
-                        if(Math.abs(nodeArl.get(i).x - p2.x) <= 95 && Math.abs(nodeArl.get(i).y - p2.y) <= 95)
+                        if(Math.abs(nodeArl.get(i).x - p2.x) <= 100 && Math.abs(nodeArl.get(i).y - p2.y) <= 100)
                             dest = nodeArl.get(i);
                         
                         //TODO add check for same node as src and dest
@@ -241,10 +242,15 @@ public class Main extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        printConnections();
         if(isRingTopology())
             System.out.println("Ring");
         else
             System.out.println("Not in Ring");
+        if(isMeshTopology())
+            System.out.println("Mesh");
+        else
+            System.out.println("Not in Mesh");
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
@@ -294,6 +300,7 @@ public class Main extends javax.swing.JFrame {
     
     private boolean isRingTopology()
     {
+        //TODO resolve bugs
         int totalNodes = nodeArl.size();
         if(totalNodes<2)
         {
@@ -350,6 +357,37 @@ public class Main extends javax.swing.JFrame {
         //TODO check what will happen if first and last nodes are not connected directly
     }
 
+    private boolean isMeshTopology()
+    {
+        //TODO testing
+        int totalNodes = nodeArl.size();
+        if(totalNodes<2)
+        {
+            JOptionPane.showMessageDialog(rootPane, "Add more nodes");
+            return false;
+        }
+        for(int i=0; i<totalNodes; i++)
+        {
+//            System.out.println("Node :" + nodeArl.get(i).x+" "+ nodeArl.get(i).y);
+//            System.out.println(nodeArl.get(i).connections.size());
+//            for(int j=0; j<nodeArl.get(i).connections.size(); j++)
+//                System.out.println(nodeArl.get(i).connections.get(j).x +" "+nodeArl.get(i).connections.get(j).y);
+            if(nodeArl.get(i).connections.size()!=totalNodes-1)
+                return false;
+        }
+        return true;
+    }
+    void printConnections()
+    {
+        int totalNodes = nodeArl.size();
+        for(int i=0; i<totalNodes; i++)
+        {
+            System.out.println("Node :" + nodeArl.get(i).x+" "+ nodeArl.get(i).y);
+            System.out.println(nodeArl.get(i).connections.size());
+            for(int j=0; j<nodeArl.get(i).connections.size(); j++)
+                System.out.println(nodeArl.get(i).connections.get(j).x +" "+nodeArl.get(i).connections.get(j).y);
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
