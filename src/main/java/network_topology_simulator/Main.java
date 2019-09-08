@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author ATUL JAIN
+ * @author AATMIK JAIN
  */
 class Node
 {
@@ -41,6 +41,14 @@ public class Main extends javax.swing.JFrame {
     private boolean addingNode = true;
     private Point p = new Point(-1, -1);
     ArrayList<Node> nodeArl = new ArrayList<>();
+    String instruction = "To add a Node:\n"
+            + "1. Click the monitor icon on the right side.\n"
+            + "2. Click on the drawing area where you want to add the node.\n\n"
+            + "To connect two Nodes:\n"
+            + "1. Click on the \"Add Connection\" button on the right side.\n"
+            + "2. Click the nodes which you want to connect.\n\n"
+            + "After you are done with drawing the topology, click \"Evaluate\" button to check which topology your diagram represents.\n\n"
+            + "Click \"Reset\" button to clear the drawing area.";
     
     public Main() {
         initComponents();
@@ -55,12 +63,15 @@ public class Main extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        NodeBtn = new javax.swing.JButton();
+        EvaluateBtn = new javax.swing.JButton();
+        ResetBtn = new javax.swing.JButton();
+        ConnectionBtn = new javax.swing.JButton();
+        NodeLabel = new javax.swing.JLabel();
+        InstructionsBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Network Topology Simulator");
         setName("Network Topology Simulator"); // NOI18N
         setResizable(false);
 
@@ -75,38 +86,55 @@ public class Main extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 425, Short.MAX_VALUE)
+            .addGap(0, 526, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 517, Short.MAX_VALUE)
         );
 
-        jButton1.setText("Add Computer");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        NodeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/node_icon.png"))); // NOI18N
+        NodeBtn.setToolTipText("Add Node");
+        NodeBtn.setBorder(null);
+        NodeBtn.setBorderPainted(false);
+        NodeBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                NodeBtnActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Evaluate");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        EvaluateBtn.setText("Evaluate");
+        EvaluateBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                EvaluateBtnActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Reset");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        ResetBtn.setText("Reset");
+        ResetBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                ResetBtnActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Add Connection");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        ConnectionBtn.setText("Add Connection");
+        ConnectionBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                ConnectionBtnActionPerformed(evt);
+            }
+        });
+
+        NodeLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/node_icon.png"))); // NOI18N
+        NodeLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                NodeLabelMouseClicked(evt);
+            }
+        });
+
+        InstructionsBtn.setText("Instructions");
+        InstructionsBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                InstructionsBtnActionPerformed(evt);
             }
         });
 
@@ -116,42 +144,55 @@ public class Main extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(EvaluateBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ResetBtn))
+                            .addComponent(ConnectionBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(16, 16, 16)
+                                .addComponent(NodeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(InstructionsBtn)
+                            .addComponent(NodeLabel))))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(4, 4, 4)
+                        .addComponent(NodeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(ConnectionBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton3)
-                            .addComponent(jButton4))
-                        .addGap(0, 180, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(EvaluateBtn)
+                            .addComponent(ResetBtn))
+                        .addGap(18, 18, 18)
+                        .addComponent(NodeLabel)
+                        .addGap(30, 30, 30)
+                        .addComponent(InstructionsBtn)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void NodeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NodeBtnActionPerformed
         // TODO add your handling code here:
         addingNode = true;        
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_NodeBtnActionPerformed
 
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
         // TODO add your handling code here:
@@ -236,7 +277,7 @@ public class Main extends javax.swing.JFrame {
         }    
     }//GEN-LAST:event_jPanel1MouseClicked
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void ResetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetBtnActionPerformed
         // TODO add your handling code here:
         jPanel1.removeAll();
         revalidate();
@@ -244,14 +285,14 @@ public class Main extends javax.swing.JFrame {
         nodeArl.clear();
         p.x = -1;
         p.y = -1;
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_ResetBtnActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void ConnectionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConnectionBtnActionPerformed
         // TODO add your handling code here:
         addingNode = false;
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_ConnectionBtnActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void EvaluateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EvaluateBtnActionPerformed
         // TODO add your handling code here:
         for(int i=0; i<nodeArl.size(); i++)
             System.out.println(i+": "+nodeArl.get(i).x+" "+nodeArl.get(i).y);
@@ -264,7 +305,17 @@ public class Main extends javax.swing.JFrame {
             System.out.println("Mesh");
         else
             System.out.println("Not in Mesh");
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_EvaluateBtnActionPerformed
+
+    private void NodeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NodeLabelMouseClicked
+        // TODO add your handling code here:
+        addingNode = true;
+    }//GEN-LAST:event_NodeLabelMouseClicked
+
+    private void InstructionsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InstructionsBtnActionPerformed
+        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(rootPane, instruction, "Instructions", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_InstructionsBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -296,7 +347,9 @@ public class Main extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                Main main = new Main();
+                main.setLocationRelativeTo(null);
+                main.setVisible(true);
             }
         });
     }
@@ -403,10 +456,12 @@ public class Main extends javax.swing.JFrame {
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton ConnectionBtn;
+    private javax.swing.JButton EvaluateBtn;
+    private javax.swing.JButton InstructionsBtn;
+    private javax.swing.JButton NodeBtn;
+    private javax.swing.JLabel NodeLabel;
+    private javax.swing.JButton ResetBtn;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
