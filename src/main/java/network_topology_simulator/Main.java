@@ -170,24 +170,25 @@ public class Main extends javax.swing.JFrame {
                 {
                     BufferedImage img = ImageIO.read(getClass().getResource("/images/node_icon.png"));
                     
-                    g.drawImage(img, p.x, p.y, rootPane);
+                    g.drawImage(img, p.x, p.y, 100, 100, rootPane);
                     nodeArl.add(new Node(p.x, p.y));
+                    p.x = -1;
+                    p.y = -1;
                 }
             }
             catch (IOException ex)
             {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            finally
-            {
                 p.x = -1;
                 p.y = -1;
             }
+            p.x = -1;
+            p.y = -1;
         }
 
         else //adding Connection
         {
-            //TODO remove seld connection
+            //TODO remove self connection
             //TODO handle exceptions
             if (p.x == -1 && p.y == -1)
             {
@@ -199,6 +200,7 @@ public class Main extends javax.swing.JFrame {
                 Graphics g = this.jPanel1.getGraphics();
                 Point p2 = new Point(evt.getX(), evt.getY());
                 //TODO write code for points not on any node
+                System.out.println(p.x+" "+p.y+" "+p2.x+" "+p2.y);
                 if(isPointOnANode(p) && isPointOnANode(p2))
                 {
                     Node src=null, dest=null;
@@ -206,17 +208,26 @@ public class Main extends javax.swing.JFrame {
                     //TODO separate or optimize search for src and dest
                     for(int i=0; i<nodeArl.size(); i++)
                     {
-                        if(Math.abs(nodeArl.get(i).x - p.x) <= 100 && Math.abs(nodeArl.get(i).y - p.y) <= 100)
+                        if(p.x - nodeArl.get(i).x <= 100 && p.x - nodeArl.get(i).x >= 0 && p.y - nodeArl.get(i).y <= 100&& p.y - nodeArl.get(i).y >= 0)
+                        {
                             src = nodeArl.get(i);
-                        if(Math.abs(nodeArl.get(i).x - p2.x) <= 100 && Math.abs(nodeArl.get(i).y - p2.y) <= 100)
-                            dest = nodeArl.get(i);
-                        
-                        //TODO add check for same node as src and dest
+                            break;
+                        }
                     }
+                    for(int i=0; i<nodeArl.size(); i++)
+                    {
+                        if(nodeArl.get(i)!=src && p2.x - nodeArl.get(i).x <= 100 && p2.x - nodeArl.get(i).x >= 0 && p2.y - nodeArl.get(i).y <= 100 && p2.y - nodeArl.get(i).y >= 0)
+                        {
+                            dest = nodeArl.get(i);
+                            break;
+                        }
+                    }
+                    System.out.println(src.x+ " " +src.y);
+                    System.out.println(dest.x+ " " +dest.y);
                     src.connections.add(dest);
                     dest.connections.add(src);
+                    g.drawLine(p.x, p.y, p2.x, p2.y);
                 }
-                g.drawLine(p.x, p.y, p2.x, p2.y);
                 
                 // reset the start point
                 p.x = -1;
@@ -242,6 +253,8 @@ public class Main extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        for(int i=0; i<nodeArl.size(); i++)
+            System.out.println(i+": "+nodeArl.get(i).x+" "+nodeArl.get(i).y);
         printConnections();
         if(isRingTopology())
             System.out.println("Ring");
@@ -335,6 +348,7 @@ public class Main extends javax.swing.JFrame {
                             src = cur;
                             visited[j] = true;
                             hasUnvisited = true;
+                            i--;
                             flag=1;
                             break;
                         }
@@ -342,7 +356,7 @@ public class Main extends javax.swing.JFrame {
                     if(flag==0)
                     {
                         hasUnvisited = false;
-                        break;
+//                        break;
                     }
                 }
             }
