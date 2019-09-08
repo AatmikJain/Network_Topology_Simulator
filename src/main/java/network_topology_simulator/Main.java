@@ -38,8 +38,8 @@ public class Main extends javax.swing.JFrame {
     /**
      * Creates new form Main
      */
-    boolean addingNode = true;
-    Point p = new Point(-1, -1);
+    private boolean addingNode = true;
+    private Point p = new Point(-1, -1);
     ArrayList<Node> nodeArl = new ArrayList<>();
     
     public Main() {
@@ -90,6 +90,11 @@ public class Main extends javax.swing.JFrame {
         });
 
         jButton3.setText("Evaluate");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Reset");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -167,7 +172,6 @@ public class Main extends javax.swing.JFrame {
                     
                     g.drawImage(img, p.x, p.y, rootPane);
                     nodeArl.add(new Node(p.x, p.y));
-                    System.out.println(p.x+" "+p.y);
                 }
             }
             catch (IOException ex)
@@ -183,6 +187,7 @@ public class Main extends javax.swing.JFrame {
 
         else //adding Connection
         {
+            //TODO remove seld connection
             //TODO handle exceptions
             if (p.x == -1 && p.y == -1)
             {
@@ -234,6 +239,14 @@ public class Main extends javax.swing.JFrame {
         addingNode = false;
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        if(isRingTopology())
+            System.out.println("Ring");
+        else
+            System.out.println("Not in Ring");
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -277,6 +290,64 @@ public class Main extends javax.swing.JFrame {
                 return true;
         }
         return false;
+    }
+    
+    private boolean isRingTopology()
+    {
+        int totalNodes = nodeArl.size();
+        if(totalNodes<2)
+        {
+            JOptionPane.showMessageDialog(rootPane, "Add more nodes");
+            return false;
+        }
+        else if(totalNodes==2)
+        {
+            if(nodeArl.get(0).connections.size()==1)
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            boolean[] visited = new boolean[totalNodes];
+            Node src = nodeArl.get(0);
+            visited[0] = true;
+            boolean hasUnvisited = true;
+            while(hasUnvisited)
+            {
+                if(src.connections.size()!=2)
+                    return false;
+                for(int i=0; i<src.connections.size(); i++)
+                {
+                    Node cur = src.connections.get(i);
+                    int flag=0;
+                    for(int j=0; j<totalNodes; j++)
+                    {
+                        if(cur==nodeArl.get(j) && !visited[j])
+                        {
+                            src = cur;
+                            visited[j] = true;
+                            hasUnvisited = true;
+                            flag=1;
+                            break;
+                        }
+                    }
+                    if(flag==0)
+                    {
+                        hasUnvisited = false;
+                        break;
+                    }
+                }
+            }
+            for(int i=0; i<totalNodes; i++)
+            {
+                if(!visited[i])
+                    return false;
+            }
+            return true;
+        }
+        
+        //TODO check what will happen if first and last nodes are not connected directly
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
