@@ -216,6 +216,7 @@ public class Main extends javax.swing.JFrame {
 
         else //adding Connection
         {
+            //TODO remove multiple connections
             if (p.x == -1 && p.y == -1)
             {
                 p.x = evt.getX();
@@ -298,6 +299,10 @@ public class Main extends javax.swing.JFrame {
             System.out.println("Mesh");
         else
             System.out.println("Not in Mesh");
+        if(isStarTopology())
+            System.out.println("Star");
+        else
+            System.out.println("Not in Star");
     }//GEN-LAST:event_EvaluateBtnActionPerformed
 
     private void InstructionsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InstructionsBtnActionPerformed
@@ -355,7 +360,6 @@ public class Main extends javax.swing.JFrame {
     
     private boolean isRingTopology()
     {
-        //TODO resolve bugs
         int totalNodes = nodeArl.size();
         if(totalNodes<2)
         {
@@ -407,14 +411,11 @@ public class Main extends javax.swing.JFrame {
                     return false;
             }
             return true;
-        }
-        
-        //TODO check what will happen if first and last nodes are not connected directly
+        }        
     }
 
     private boolean isMeshTopology()
     {
-        //TODO testing
         int totalNodes = nodeArl.size();
         if(totalNodes<2)
         {
@@ -424,6 +425,33 @@ public class Main extends javax.swing.JFrame {
         for(int i=0; i<totalNodes; i++)
             if(nodeArl.get(i).connections.size()!=totalNodes-1)
                 return false;
+        return true;
+    }
+    
+    private boolean isStarTopology()
+    {
+        int totalNodes = nodeArl.size();
+        int serverNodes=0;
+        if(totalNodes==2)
+        {
+            for(int i=0; i<2; i++)
+            {
+                if(nodeArl.get(i).connections.size()!=1)
+                    return false;
+            }
+            return true;
+        }
+        for(int i=0; i<totalNodes; i++)
+        {
+            if(nodeArl.get(i).connections.size()==totalNodes-1)
+            {
+                serverNodes++;
+                if(serverNodes>1)
+                    return false;
+            }
+            else if(nodeArl.get(i).connections.size()!=1)
+                return false;
+        }
         return true;
     }
     void printConnections()
