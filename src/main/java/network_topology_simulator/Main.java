@@ -38,6 +38,7 @@ public class Main extends javax.swing.JFrame {
     /**
      * Creates new form Main
      */
+    
     private boolean addingNode = true;
     private Point p = new Point(-1, -1);
     ArrayList<Node> nodeArl = new ArrayList<>();
@@ -52,6 +53,7 @@ public class Main extends javax.swing.JFrame {
     
     public Main() {
         initComponents();
+        ResultTA.setEditable(false);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -68,6 +70,8 @@ public class Main extends javax.swing.JFrame {
         ResetBtn = new javax.swing.JButton();
         ConnectionBtn = new javax.swing.JButton();
         InstructionsBtn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        ResultTA = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Network Topology Simulator");
@@ -130,6 +134,10 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        ResultTA.setColumns(10);
+        ResultTA.setRows(5);
+        jScrollPane1.setViewportView(ResultTA);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -137,20 +145,20 @@ public class Main extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(InstructionsBtn))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(NodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(EvaluateBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ResetBtn))
-                            .addComponent(ConnectionBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(6, 6, 6)
+                            .addComponent(InstructionsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(NodeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(EvaluateBtn)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(ResetBtn))
+                        .addComponent(ConnectionBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -167,8 +175,10 @@ public class Main extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(EvaluateBtn)
                             .addComponent(ResetBtn))
-                        .addGap(148, 148, 148)
-                        .addComponent(InstructionsBtn)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(InstructionsBtn)
+                        .addGap(28, 28, 28)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -199,7 +209,7 @@ public class Main extends javax.swing.JFrame {
                     
                     g.drawImage(img, p.x, p.y, 100, 100, rootPane);
                     nodeArl.add(new Node(p.x, p.y));
-                    System.out.println("node added");
+//                    System.out.println("node added");
                     p.x = -1;
                     p.y = -1;
                 }
@@ -226,7 +236,7 @@ public class Main extends javax.swing.JFrame {
             {
                 Graphics g = this.jPanel1.getGraphics();
                 Point p2 = new Point(evt.getX(), evt.getY());
-                System.out.println(p.x+" "+p.y+" "+p2.x+" "+p2.y);
+//                System.out.println(p.x+" "+p.y+" "+p2.x+" "+p2.y);
                 
                 Node src=null, dest=null;
                 //locate src
@@ -257,8 +267,8 @@ public class Main extends javax.swing.JFrame {
                 }
                 if(dest != null)
                 {
-                    System.out.println(src.x+ " " +src.y);
-                    System.out.println(dest.x+ " " +dest.y);
+//                    System.out.println(src.x+ " " +src.y);
+//                    System.out.println(dest.x+ " " +dest.y);
                     src.connections.add(dest);
                     dest.connections.add(src);
                     g.drawLine(p.x, p.y, p2.x, p2.y);
@@ -276,6 +286,7 @@ public class Main extends javax.swing.JFrame {
         jPanel1.removeAll();
         revalidate();
         repaint();
+        ResultTA.setText("");
         nodeArl.clear();
         p.x = -1;
         p.y = -1;
@@ -288,21 +299,39 @@ public class Main extends javax.swing.JFrame {
 
     private void EvaluateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EvaluateBtnActionPerformed
         // TODO add your handling code here:
-        for(int i=0; i<nodeArl.size(); i++)
-            System.out.println(i+": "+nodeArl.get(i).x+" "+nodeArl.get(i).y);
-        printConnections();
+//        for(int i=0; i<nodeArl.size(); i++)
+//            System.out.println(i+": "+nodeArl.get(i).x+" "+nodeArl.get(i).y);
+//        printConnections();
         if(isRingTopology())
+        {
+            ResultTA.append("Ring\n");
             System.out.println("Ring");
+        }
         else
+        {
+            ResultTA.append("Not in Ring\n");
             System.out.println("Not in Ring");
+        }
         if(isMeshTopology())
+        {
+            ResultTA.append("Mesh\n");
             System.out.println("Mesh");
+        }
         else
+        {
+            ResultTA.append("Not in Mesh\n");
             System.out.println("Not in Mesh");
+        }
         if(isStarTopology())
+        {
+            ResultTA.append("Star\n");
             System.out.println("Star");
+        }
         else
+        {
+            ResultTA.append("Not in Star\n");
             System.out.println("Not in Star");
+        }
     }//GEN-LAST:event_EvaluateBtnActionPerformed
 
     private void InstructionsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InstructionsBtnActionPerformed
@@ -354,7 +383,7 @@ public class Main extends javax.swing.JFrame {
             if(Math.abs(nodeArl.get(i).x - p.x) <= 95 && Math.abs(nodeArl.get(i).y - p.y) <= 95)
                 return true;
         }
-        System.out.println(p.x+" "+ p.y+" "+"not on a node");
+//        System.out.println(p.x+" "+ p.y+" "+"not on a node");
         return false;
     }
     
@@ -471,6 +500,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton InstructionsBtn;
     private javax.swing.JButton NodeBtn;
     private javax.swing.JButton ResetBtn;
+    private javax.swing.JTextArea ResultTA;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
