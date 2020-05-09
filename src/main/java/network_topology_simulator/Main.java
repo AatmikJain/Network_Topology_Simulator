@@ -64,7 +64,7 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        Panel = new javax.swing.JPanel();
         NodeBtn = new javax.swing.JButton();
         EvaluateBtn = new javax.swing.JButton();
         ResetBtn = new javax.swing.JButton();
@@ -78,21 +78,21 @@ public class Main extends javax.swing.JFrame {
         setName("Network Topology Simulator"); // NOI18N
         setResizable(false);
 
-        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+        Panel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        Panel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jPanel1MouseClicked(evt);
+                PanelMouseClicked(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout PanelLayout = new javax.swing.GroupLayout(Panel);
+        Panel.setLayout(PanelLayout);
+        PanelLayout.setHorizontalGroup(
+            PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 526, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        PanelLayout.setVerticalGroup(
+            PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 517, Short.MAX_VALUE)
         );
 
@@ -144,7 +144,7 @@ public class Main extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -165,7 +165,7 @@ public class Main extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(4, 4, 4)
                         .addComponent(NodeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -190,13 +190,13 @@ public class Main extends javax.swing.JFrame {
         addingNode = true;        
     }//GEN-LAST:event_NodeBtnActionPerformed
 
-    private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
+    private void PanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelMouseClicked
         // TODO add your handling code here:
 
         if(addingNode)
         {
             // TODO validate right corner addition
-            Graphics g = this.jPanel1.getGraphics();
+            Graphics g = this.Panel.getGraphics();
             p.x = Math.max(0, evt.getX()-50);
             p.y = Math.max(0, evt.getY()-50);
             try 
@@ -205,7 +205,7 @@ public class Main extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Overlapping other node");
                 else
                 {
-                    BufferedImage img = ImageIO.read(getClass().getResource("/images/node_icon.png"));
+                    BufferedImage img = ImageIO.read(getClass().getResource("/node_icon.png"));
                     
                     g.drawImage(img, p.x, p.y, 100, 100, rootPane);
                     nodeArl.add(new Node(p.x, p.y));
@@ -234,7 +234,7 @@ public class Main extends javax.swing.JFrame {
             }
             else
             {
-                Graphics g = this.jPanel1.getGraphics();
+                Graphics g = this.Panel.getGraphics();
                 Point p2 = new Point(evt.getX(), evt.getY());
 //                System.out.println(p.x+" "+p.y+" "+p2.x+" "+p2.y);
                 
@@ -279,11 +279,11 @@ public class Main extends javax.swing.JFrame {
                 p.y = -1;
             }
         }    
-    }//GEN-LAST:event_jPanel1MouseClicked
+    }//GEN-LAST:event_PanelMouseClicked
 
     private void ResetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetBtnActionPerformed
         // TODO add your handling code here:
-        jPanel1.removeAll();
+        Panel.removeAll();
         revalidate();
         repaint();
         ResultTA.setText("");
@@ -302,6 +302,7 @@ public class Main extends javax.swing.JFrame {
 //        for(int i=0; i<nodeArl.size(); i++)
 //            System.out.println(i+": "+nodeArl.get(i).x+" "+nodeArl.get(i).y);
 //        printConnections();
+        ResultTA.setText("");
         if(isRingTopology())
         {
             ResultTA.append("Ring\n");
@@ -461,6 +462,8 @@ public class Main extends javax.swing.JFrame {
     {
         int totalNodes = nodeArl.size();
         int serverNodes=0;
+        if(totalNodes<2)
+            return false;
         if(totalNodes==2)
         {
             for(int i=0; i<2; i++)
@@ -499,9 +502,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton EvaluateBtn;
     private javax.swing.JButton InstructionsBtn;
     private javax.swing.JButton NodeBtn;
+    private javax.swing.JPanel Panel;
     private javax.swing.JButton ResetBtn;
     private javax.swing.JTextArea ResultTA;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
